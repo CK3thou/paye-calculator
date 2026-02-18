@@ -448,8 +448,8 @@ function calculate() {
   const monthly = period === 'annual' ? raw / 12 : raw;
   const { totalTax, breakdown } = calcPAYE(monthly);
   
-  // Calculate NAPSA (5% of gross)
-  const napsa = monthly * 0.05;
+  // Calculate NAPSA (5% of gross, capped at 1,861.80)
+  const napsa = Math.min(monthly * 0.05, 1861.80);
   
   // Calculate NHIMA (1% of gross)
   const nhima = monthly * 0.01;
