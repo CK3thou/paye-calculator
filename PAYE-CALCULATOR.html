@@ -272,6 +272,10 @@
     padding: 1rem;
   }
 
+  .summary-item:nth-child(5) {
+    grid-column: span 2;
+  }
+
   .summary-label {
     font-size: 0.65rem;
     letter-spacing: 0.1em;
@@ -291,7 +295,6 @@
   .summary-item.highlight {
     background: var(--green-dim);
     border-color: rgba(106,171,122,0.25);
-    grid-column: span 2;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -331,7 +334,7 @@
 <body>
 <div class="card">
   <div class="header">
-    <div class="header-label">Zambia Revenue Authority</div>
+    <div class="header-label">3 Stacks PAYE Calculator</div>
     <h1>PAYE Tax <span>Calculator</span></h1>
   </div>
 
@@ -365,10 +368,18 @@
           <div class="summary-label">Total PAYE</div>
           <div class="summary-value" id="r-tax" style="color:var(--gold-light)">—</div>
         </div>
+        <div class="summary-item">
+          <div class="summary-label">NAPSA (5%)</div>
+          <div class="summary-value" id="r-napsa" style="color:var(--gold-light)">—</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">NHIMA (1%)</div>
+          <div class="summary-value" id="r-nhima" style="color:var(--gold-light)">—</div>
+        </div>
         <div class="summary-item highlight">
           <div class="net-label">
             <div class="summary-label">Net Pay</div>
-            <div class="net-tag">After PAYE</div>
+            <div class="net-tag">After All Deductions</div>
           </div>
           <div class="summary-value" id="r-net">—</div>
         </div>
@@ -436,7 +447,16 @@ function calculate() {
 
   const monthly = period === 'annual' ? raw / 12 : raw;
   const { totalTax, breakdown } = calcPAYE(monthly);
-  const net = monthly - totalTax;
+  
+  // Calculate NAPSA (5% of gross)
+  const napsa = monthly * 0.05;
+  
+  // Calculate NHIMA (1% of gross)
+  const nhima = monthly * 0.01;
+  
+  // Total deductions
+  const totalDeductions = totalTax + napsa + nhima;
+  const net = monthly - totalDeductions;
   const effRate = monthly > 0 ? (totalTax / monthly * 100) : 0;
 
   // Render bands
@@ -459,6 +479,8 @@ function calculate() {
 
   document.getElementById('r-gross').textContent = fmt(monthly);
   document.getElementById('r-tax').textContent = fmt(totalTax);
+  document.getElementById('r-napsa').textContent = fmt(napsa);
+  document.getElementById('r-nhima').textContent = fmt(nhima);
   document.getElementById('r-net').textContent = fmt(net);
   document.getElementById('r-rate').textContent = effRate.toFixed(2) + '%';
 
