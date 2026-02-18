@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAYE Tax Calculator 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e0c;
+    --surface: #1a1814;
+    --surface2: #232118;
+    --border: #2e2b24;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --gold-dim: rgba(201,168,76,0.15);
+    --text: #f0ead8;
+    --text-muted: #8a8270;
+    --green: #6aab7a;
+    --green-dim: rgba(106,171,122,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background-image: 
+      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(106,171,122,0.03) 0%, transparent 50%);
+  }
+
+  .card {
+    width: 100%;
+    max-width: 560px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.06);
+    animation: rise 0.6s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1e1b14 0%, #161410 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .header-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+  }
+
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.85rem;
+    color: var(--text);
+    font-weight: 400;
+    line-height: 1.1;
+  }
+
+  .header h1 span {
+    color: var(--gold-light);
+    font-style: italic;
+  }
+
+  .body { padding: 2rem 2.5rem; }
+
+  .input-group {
+    margin-bottom: 1.5rem;
+  }
+
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .currency {
+    position: absolute;
+    left: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--gold);
+    pointer-events: none;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 0.85rem 1rem 0.85rem 2.8rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  input[type="number"]:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+  }
+
+  .period-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 0.55rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .tab:hover { border-color: var(--gold); color: var(--text); }
+
+  .tab.active {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--gold);
+    color: #0f0e0c;
+    border: none;
+    border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn:hover { background: var(--gold-light); }
+  .btn:active { transform: scale(0.99); }
+
+  .results {
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+    display: none;
+    animation: rise 0.4s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  .results.show { display: block; }
+
+  .results-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .bands {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .band {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-size: 0.82rem;
+  }
+
+  .band.active {
+    border-color: rgba(201,168,76,0.3);
+    background: var(--gold-dim);
+  }
+
+  .band-rate {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--gold);
+    min-width: 2.5rem;
+    font-weight: 500;
+  }
+
+  .band-desc {
+    flex: 1;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  .band-amount {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--text);
+    text-align: right;
+  }
+
+  .band.active .band-amount { color: var(--gold-light); }
+
+  .summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .summary-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 1rem;
+  }
+
+  .summary-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .summary-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .summary-item.highlight {
+    background: var(--green-dim);
+    border-color: rgba(106,171,122,0.25);
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .summary-item.highlight .summary-value {
+    font-size: 1.6rem;
+    color: var(--green);
+  }
+
+  .net-label { display: flex; flex-direction: column; }
+  .net-tag {
+    font-size: 0.6rem;
+    color: rgba(106,171,122,0.6);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+    margin-top: 0.2rem;
+  }
+
+  .eff-rate {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .eff-rate strong {
+    color: var(--gold);
+    font-size: 1rem;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Zambia Revenue Authority</div>
+    <h1>PAYE Tax <span>Calculator</span></h1>
+  </div>
+
+  <div class="body">
+    <div class="input-group">
+      <label>Gross Income</label>
+      <div class="input-wrap">
+        <span class="currency">K</span>
+        <input type="number" id="income" placeholder="0.00" min="0" step="0.01">
+      </div>
+    </div>
+
+    <div class="period-tabs">
+      <button class="tab active" onclick="setPeriod('monthly', this)">Monthly</button>
+      <button class="tab" onclick="setPeriod('annual', this)">Annual</button>
+    </div>
+
+    <button class="btn" onclick="calculate()">Calculate Tax</button>
+
+    <div class="results" id="results">
+      <div class="results-title">Tax Breakdown — 2026</div>
+
+      <div class="bands" id="bands"></div>
+
+      <div class="summary">
+        <div class="summary-item">
+          <div class="summary-label">Gross (Monthly)</div>
+          <div class="summary-value" id="r-gross">—</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Total PAYE</div>
+          <div class="summary-value" id="r-tax" style="color:var(--gold-light)">—</div>
+        </div>
+        <div class="summary-item highlight">
+          <div class="net-label">
+            <div class="summary-label">Net Pay</div>
+            <div class="net-tag">After PAYE</div>
+          </div>
+          <div class="summary-value" id="r-net">—</div>
+        </div>
+      </div>
+
+      <div class="eff-rate">
+        Effective Tax Rate: <strong id="r-rate">0%</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let period = 'monthly';
+
+function setPeriod(p, el) {
+  period = p;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function fmt(n) {
+  return 'K' + n.toLocaleString('en-ZM', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function calcPAYE(monthly) {
+  const bands = [
+    { limit: 5100, rate: 0 },
+    { limit: 7100, rate: 0.20 },
+    { limit: 9200, rate: 0.30 },
+    { limit: Infinity, rate: 0.37 },
+  ];
+
+  let remaining = monthly;
+  let prev = 0;
+  let totalTax = 0;
+  const breakdown = [];
+
+  for (const band of bands) {
+    if (remaining <= 0) break;
+    const span = band.limit - prev;
+    const taxable = Math.min(remaining, span);
+    const tax = taxable * band.rate;
+    totalTax += tax;
+
+    breakdown.push({
+      rate: band.rate,
+      taxable,
+      tax,
+      from: prev,
+      to: band.limit === Infinity ? null : band.limit,
+      active: taxable > 0
+    });
+
+    remaining -= taxable;
+    prev = band.limit;
+  }
+
+  return { totalTax, breakdown };
+}
+
+function calculate() {
+  const raw = parseFloat(document.getElementById('income').value);
+  if (!raw || raw < 0) return;
+
+  const monthly = period === 'annual' ? raw / 12 : raw;
+  const { totalTax, breakdown } = calcPAYE(monthly);
+  const net = monthly - totalTax;
+  const effRate = monthly > 0 ? (totalTax / monthly * 100) : 0;
+
+  // Render bands
+  const labels = ['0%', '20%', '30%', '37%'];
+  const descs = [
+    'First K5,100.00',
+    'K5,100.01 – K7,100.00',
+    'K7,100.01 – K9,200.00',
+    'K9,200.01 and above',
+  ];
+  let html = '';
+  breakdown.forEach((b, i) => {
+    html += `<div class="band ${b.active && b.rate > 0 ? 'active' : ''}">
+      <div class="band-rate">${labels[i]}</div>
+      <div class="band-desc">${descs[i]}</div>
+      <div class="band-amount">${b.active ? fmt(b.tax) : '—'}</div>
+    </div>`;
+  });
+  document.getElementById('bands').innerHTML = html;
+
+  document.getElementById('r-gross').textContent = fmt(monthly);
+  document.getElementById('r-tax').textContent = fmt(totalTax);
+  document.getElementById('r-net').textContent = fmt(net);
+  document.getElementById('r-rate').textContent = effRate.toFixed(2) + '%';
+
+  const el = document.getElementById('results');
+  el.classList.remove('show');
+  void el.offsetWidth;
+  el.classList.add('show');
+}
+
+document.getElementById('income').addEventListener('keydown', e => {
+  if (e.key === 'Enter') calculate();
+});
+</script>
+</body>
+</html>
