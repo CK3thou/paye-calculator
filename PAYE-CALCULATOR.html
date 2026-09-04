@@ -91,7 +91,37 @@
     font-style: italic;
   }
 
+  .header-nav {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .nav-btn {
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .nav-btn:hover,
+  .nav-btn.active {
+    border-color: var(--gold);
+    color: var(--gold-light);
+    background: var(--gold-dim);
+  }
+
   .body { padding: 2rem 2.5rem; }
+
+  .view { display: none; }
+  .view.active { display: block; }
 
   .input-group {
     margin-bottom: 1.5rem;
@@ -329,64 +359,112 @@
     color: var(--gold);
     font-size: 1rem;
   }
+
+  .gratuity-note {
+    margin: -0.25rem 0 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
 </style>
 </head>
 <body>
 <div class="card">
   <div class="header">
     <div class="header-label">Effective PAYE Tax Calculator by Chishimba Kabwe</div>
-    <h1>PAYE Tax <span>Calculator</span></h1>
+    <h1 id="page-title">PAYE Tax <span>Calculator</span></h1>
+    <div class="header-nav">
+      <button class="nav-btn active" id="paye-nav" onclick="showView('paye')">PAYE Calculator</button>
+      <button class="nav-btn" id="gratuity-nav" onclick="showView('gratuity')">Gratuity Calculator</button>
+    </div>
   </div>
 
   <div class="body">
-    <div class="input-group">
-      <label>Gross Income</label>
-      <div class="input-wrap">
-        <span class="currency">K</span>
-        <input type="number" id="income" placeholder="0.00" min="0" step="0.01">
+    <div class="view active" id="paye-view">
+      <div class="input-group">
+        <label>Gross Income</label>
+        <div class="input-wrap">
+          <span class="currency">K</span>
+          <input type="number" id="income" placeholder="0.00" min="0" step="0.01">
+        </div>
       </div>
-    </div>
 
-    <div class="period-tabs">
-      <button class="tab active" onclick="setPeriod('monthly', this)">Monthly</button>
-      <button class="tab" onclick="setPeriod('annual', this)">Annual</button>
-    </div>
+      <div class="period-tabs">
+        <button class="tab active" onclick="setPeriod('monthly', this)">Monthly</button>
+        <button class="tab" onclick="setPeriod('annual', this)">Annual</button>
+      </div>
 
-    <button class="btn" onclick="calculate()">Calculate Tax</button>
+      <button class="btn" onclick="calculate()">Calculate Tax</button>
 
-    <div class="results" id="results">
-      <div class="results-title">Tax Breakdown — 2026</div>
+      <div class="results" id="results">
+        <div class="results-title">Tax Breakdown — 2026</div>
 
-      <div class="bands" id="bands"></div>
+        <div class="bands" id="bands"></div>
 
-      <div class="summary">
-        <div class="summary-item">
-          <div class="summary-label">Gross (Monthly)</div>
-          <div class="summary-value" id="r-gross">—</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">Total PAYE</div>
-          <div class="summary-value" id="r-tax" style="color:var(--gold-light)">—</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">NAPSA (5%)</div>
-          <div class="summary-value" id="r-napsa" style="color:var(--gold-light)">—</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">NHIMA (1%)</div>
-          <div class="summary-value" id="r-nhima" style="color:var(--gold-light)">—</div>
-        </div>
-        <div class="summary-item highlight">
-          <div class="net-label">
-            <div class="summary-label">Net Pay</div>
-            <div class="net-tag">After All Deductions</div>
+        <div class="summary">
+          <div class="summary-item">
+            <div class="summary-label">Gross (Monthly)</div>
+            <div class="summary-value" id="r-gross">—</div>
           </div>
-          <div class="summary-value" id="r-net">—</div>
+          <div class="summary-item">
+            <div class="summary-label">Total PAYE</div>
+            <div class="summary-value" id="r-tax" style="color:var(--gold-light)">—</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">NAPSA (5%)</div>
+            <div class="summary-value" id="r-napsa" style="color:var(--gold-light)">—</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">NHIMA (1%)</div>
+            <div class="summary-value" id="r-nhima" style="color:var(--gold-light)">—</div>
+          </div>
+          <div class="summary-item highlight">
+            <div class="net-label">
+              <div class="summary-label">Net Pay</div>
+              <div class="net-tag">After All Deductions</div>
+            </div>
+            <div class="summary-value" id="r-net">—</div>
+          </div>
+        </div>
+
+        <div class="eff-rate">
+          Effective Tax Rate: <strong id="r-rate">0%</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="gratuity-view">
+      <div class="input-group">
+        <label for="basic-pay">Monthly Basic Pay</label>
+        <div class="input-wrap">
+          <span class="currency">K</span>
+          <input type="number" id="basic-pay" placeholder="0.00" min="0" step="0.01">
         </div>
       </div>
 
-      <div class="eff-rate">
-        Effective Tax Rate: <strong id="r-rate">0%</strong>
+      <div class="input-group">
+        <label for="months-worked">Total Months Worked</label>
+        <input type="number" id="months-worked" placeholder="0" min="0" step="1">
+      </div>
+
+      <p class="gratuity-note">Gratuity is calculated as 25% of your total basic salary earnings.</p>
+      <button class="btn" onclick="calculateGratuity()">Calculate Gratuity</button>
+
+      <div class="results" id="gratuity-results">
+        <div class="results-title">Gratuity Summary</div>
+        <div class="summary">
+          <div class="summary-item">
+            <div class="summary-label">Total Basic Salary Earnings</div>
+            <div class="summary-value" id="r-basic-earnings">—</div>
+          </div>
+          <div class="summary-item highlight">
+            <div class="net-label">
+              <div class="summary-label">Gratuity Amount</div>
+              <div class="net-tag">25% of Basic Earnings</div>
+            </div>
+            <div class="summary-value" id="r-gratuity">—</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -394,6 +472,17 @@
 
 <script>
 let period = 'monthly';
+
+function showView(view) {
+  const isGratuity = view === 'gratuity';
+  document.getElementById('paye-view').classList.toggle('active', !isGratuity);
+  document.getElementById('gratuity-view').classList.toggle('active', isGratuity);
+  document.getElementById('paye-nav').classList.toggle('active', !isGratuity);
+  document.getElementById('gratuity-nav').classList.toggle('active', isGratuity);
+  document.getElementById('page-title').innerHTML = isGratuity
+    ? 'Gratuity <span>Calculator</span>'
+    : 'PAYE Tax <span>Calculator</span>';
+}
 
 function setPeriod(p, el) {
   period = p;
@@ -490,8 +579,33 @@ function calculate() {
   el.classList.add('show');
 }
 
+function calculateGratuity() {
+  const basicPay = parseFloat(document.getElementById('basic-pay').value);
+  const monthsWorked = parseFloat(document.getElementById('months-worked').value);
+  if (!Number.isFinite(basicPay) || basicPay < 0 || !Number.isFinite(monthsWorked) || monthsWorked < 0) return;
+
+  const basicEarnings = basicPay * monthsWorked;
+  const gratuity = basicEarnings * 0.25;
+
+  document.getElementById('r-basic-earnings').textContent = fmt(basicEarnings);
+  document.getElementById('r-gratuity').textContent = fmt(gratuity);
+
+  const el = document.getElementById('gratuity-results');
+  el.classList.remove('show');
+  void el.offsetWidth;
+  el.classList.add('show');
+}
+
 document.getElementById('income').addEventListener('keydown', e => {
   if (e.key === 'Enter') calculate();
+});
+
+document.getElementById('basic-pay').addEventListener('keydown', e => {
+  if (e.key === 'Enter') calculateGratuity();
+});
+
+document.getElementById('months-worked').addEventListener('keydown', e => {
+  if (e.key === 'Enter') calculateGratuity();
 });
 </script>
 </body>
