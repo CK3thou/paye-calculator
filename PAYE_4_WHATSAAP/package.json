@@ -1,0 +1,12 @@
+{
+  "name": "paye-calculator-whatsapp",
+  "version": "1.0.0",
+  "main": "index-twilio.js",
+  "scripts": {
+    "start:twilio": "node index-twilio.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "twilio": "^6.1.1"
+  }
+}
