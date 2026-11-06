@@ -17,7 +17,7 @@ function calcPAYE(monthly){
     { limit: 7100, rate: 0.20, label: 'K5,100.01 - K7,100.00' },
     { limit: 9200, rate: 0.30, label: 'K7,100.01 - K9,200.00' },
     { limit: 37000, rate: 0.37, label: 'K9,200.01 - K37,000.00' },
-    { limit: Infinity, rate: 0.39, label: 'Above K37,000.00' }
+    { limit: Infinity, rate: 0.395, label: 'Above K37,000.00' }
   ];
   let rem=monthly, prev=0, tax=0, breakdown=[];
   for(const b of bands){
