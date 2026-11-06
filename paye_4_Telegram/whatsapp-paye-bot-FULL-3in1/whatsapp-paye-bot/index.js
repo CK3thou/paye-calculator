@@ -15,7 +15,8 @@ function calcPAYE(monthly){
     { limit: 5100, rate: 0, label: 'First K5,100.00' },
     { limit: 7100, rate: 0.20, label: 'K5,100.01 - K7,100.00' },
     { limit: 9200, rate: 0.30, label: 'K7,100.01 - K9,200.00' },
-    { limit: Infinity, rate: 0.37, label: 'K9,200.01 and above' },
+    { limit: 37000, rate: 0.37, label: 'K9,200.01 - K37,000.00' },
+    { limit: Infinity, rate: 0.395, label: 'K37,000.01 and above' },
   ];
   let remaining = monthly, prev = 0, totalTax = 0;
   const breakdown = [];
@@ -66,6 +67,8 @@ _by Chishimba Kabwe_
 4️⃣ *gratuity 12000 24* - Basic K12k x 24 months
 5️⃣ *help* - Show this menu
 
+Top PAYE band: *39.5% on K37,000.01 and above*
+
 Example: Send *paye 25000*`;
   }
 
@@ -108,7 +111,7 @@ _Note: 25% of total basic salary earnings._`;
     const annualGross = monthly*12;
 
     let breakdownText = breakdown.map((b,i)=>{
-      const rates = ['0%','20%','30%','37%'];
+      const rates = ['0%','20%','30%','37%','39.5%'];
       return `${rates[i]} on ${b.label}: ${b.tax>0?fmt(b.tax):'-'}`;
     }).join('\n');
 

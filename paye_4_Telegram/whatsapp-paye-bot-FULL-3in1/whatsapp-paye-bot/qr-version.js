@@ -7,7 +7,7 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
 function calcPAYE(monthly){
-  const bands = [{limit:5100,rate:0},{limit:7100,rate:0.20},{limit:9200,rate:0.30},{limit:Infinity,rate:0.37}];
+  const bands = [{limit:5100,rate:0},{limit:7100,rate:0.20},{limit:9200,rate:0.30},{limit:37000,rate:0.37},{limit:Infinity,rate:0.395}];
   let rem=monthly, prev=0, tax=0;
   const breakdown=[];
   for(const b of bands){
@@ -21,7 +21,7 @@ const fmt = (n)=> 'K'+n.toLocaleString('en-ZM',{minimumFractionDigits:2});
 function handleMessage(text){
   const lower = text.toLowerCase().trim();
   if(['hi','hello','help','menu'].includes(lower)){
-    return `👋 PAYE Calculator 2026\nCommands:\npaye 15000\nannual 180000\ngratuity 12000 24`;
+    return `👋 PAYE Calculator 2026\nCommands:\npaye 15000\nannual 180000\ngratuity 12000 24\nTop PAYE band: 39.5% on K37,000.01 and above`;
   }
   let monthly=null;
   if(lower.startsWith('paye')) monthly=parseFloat(lower.split(' ')[1]);
@@ -36,7 +36,7 @@ function handleMessage(text){
     const {tax,breakdown}=calcPAYE(monthly);
     const napsa=Math.min(monthly*0.05,1861.80); const nhima=monthly*0.01;
     const net=monthly-tax-napsa-nhima;
-    return `PAYE Breakdown ${fmt(monthly)}\n0%: ${fmt(breakdown[0]||0)}\n20%: ${fmt(breakdown[1]||0)}\n30%: ${fmt(breakdown[2]||0)}\n37%: ${fmt(breakdown[3]||0)}\nTotal PAYE ${fmt(tax)}\nNAPSA ${fmt(napsa)}\nNHIMA ${fmt(nhima)}\nNET ${fmt(net)}`;
+    return `PAYE Breakdown ${fmt(monthly)}\n0% up to K5,100: ${fmt(breakdown[0]||0)}\n20% K5,100.01-K7,100: ${fmt(breakdown[1]||0)}\n30% K7,100.01-K9,200: ${fmt(breakdown[2]||0)}\n37% K9,200.01-K37,000: ${fmt(breakdown[3]||0)}\n39.5% K37,000.01 and above: ${fmt(breakdown[4]||0)}\nTotal PAYE ${fmt(tax)}\nNAPSA ${fmt(napsa)}\nNHIMA ${fmt(nhima)}\nNET ${fmt(net)}`;
   }
   return null;
 }

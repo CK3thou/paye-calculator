@@ -17,7 +17,7 @@ function calcPAYE(monthly){
     { limit: 7100, rate: 0.20, label: 'K5,100.01 - K7,100.00' },
     { limit: 9200, rate: 0.30, label: 'K7,100.01 - K9,200.00' },
     { limit: 37000, rate: 0.37, label: 'K9,200.01 - K37,000.00' },
-    { limit: Infinity, rate: 0.395, label: 'Above K37,000.00' }
+    { limit: Infinity, rate: 0.395, label: 'K37,000.01 and above' }
   ];
   let rem=monthly, prev=0, tax=0, breakdown=[];
   for(const b of bands){
@@ -63,7 +63,7 @@ Zambia ZRA Rates:
 • 20% K5,100 - K7,100
 • 30% K7,100 - K9,200
 • 37% K9,200.01 - K37,000
-• 39% above K37,000
+• 39.5% K37,000.01 and above
 • NAPSA 5% capped K1,861.80
 • NHIMA 1%
 
@@ -128,7 +128,7 @@ ${isAnnual?`Annual K${(monthly*12).toLocaleString()} => Monthly ${fmt(monthly)}`
 `+
     `*37%* on ${breakdown[3]?.label}: ${fmt(breakdown[3]?.tax||0)}
 `+
-    `*39%* on ${breakdown[4]?.label}: ${fmt(breakdown[4]?.tax||0)}
+    `*39.5%* on ${breakdown[4]?.label}: ${fmt(breakdown[4]?.tax||0)}
 
 `+
     `*Total PAYE: ${fmt(tax)}*

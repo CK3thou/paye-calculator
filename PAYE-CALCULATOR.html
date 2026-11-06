@@ -550,13 +550,13 @@ function calculate() {
   const effRate = monthly > 0 ? (totalTax / monthly * 100) : 0;
 
   // Render bands
-  const labels = ['0%', '20%', '30%', '37%', '39%'];
+  const labels = ['0%', '20%', '30%', '37%', '39.5%'];
   const descs = [
     'First K5,100.00',
     'K5,100.01 – K7,100.00',
     'K7,100.01 – K9,200.00',
     'K9,200.01 – K37,000.00',
-    'Above K37,000.00',
+    'K37,000.01 and above',
   ];
   let html = '';
   breakdown.forEach((b, i) => {

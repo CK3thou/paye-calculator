@@ -12,7 +12,8 @@ function calcPAYE(monthly){
     { limit: 5100, rate: 0 },
     { limit: 7100, rate: 0.20 },
     { limit: 9200, rate: 0.30 },
-    { limit: Infinity, rate: 0.37 },
+    { limit: 37000, rate: 0.37 },
+    { limit: Infinity, rate: 0.395 },
   ];
   let rem=monthly, prev=0, tax=0, breakdown=[];
   for(const b of bands){
@@ -33,7 +34,7 @@ function handleMessage(text){
   const lower = raw.toLowerCase();
 
   if(['hi','hello','hey','menu','start','help','hallo'].includes(lower)){
-    return `👋 *PAYE Tax Calculator 2026*\n_by Chishimba Kabwe_\n\nCommands:\n• *paye 15000* - Monthly gross\n• *annual 180000* - Annual\n• *15000* - Just type amount\n• *gratuity 12000 24* - Basic + months\n\nTry: paye 25000`;
+    return `👋 *PAYE Tax Calculator 2026*\n_by Chishimba Kabwe_\n\nCommands:\n• *paye 15000* - Monthly gross\n• *annual 180000* - Annual\n• *15000* - Just type amount\n• *gratuity 12000 24* - Basic + months\n\nTop PAYE band: *39.5% on K37,000.01 and above*\n\nTry: paye 25000`;
   }
 
   if(lower.startsWith('gratuity') || lower.startsWith('grat')){
@@ -57,7 +58,7 @@ function handleMessage(text){
     const nhima=monthly*0.01;
     const net=monthly-tax-napsa-nhima;
     const eff=(monthly>0?tax/monthly*100:0).toFixed(2);
-    return `*💰 PAYE Breakdown 2026*\nGross: ${fmt(monthly)} ${isAnnual?'(from annual)':'(Monthly)'}\n\n0% on first 5,100: ${fmt(breakdown[0]||0)}\n20% on 5,100-7,100: ${fmt(breakdown[1]||0)}\n30% on 7,100-9,200: ${fmt(breakdown[2]||0)}\n37% above 9,200: ${fmt(breakdown[3]||0)}\n\n*Total PAYE: ${fmt(tax)}*\nNAPSA (5% capped): ${fmt(napsa)}\nNHIMA (1%): ${fmt(nhima)}\n----------------\n*NET PAY: ${fmt(net)}*\nEff Rate: ${eff}%`;
+    return `*💰 PAYE Breakdown 2026*\nGross: ${fmt(monthly)} ${isAnnual?'(from annual)':'(Monthly)'}\n\n0% on first 5,100: ${fmt(breakdown[0]||0)}\n20% on 5,100-7,100: ${fmt(breakdown[1]||0)}\n30% on 7,100-9,200: ${fmt(breakdown[2]||0)}\n37% on 9,200.01-37,000: ${fmt(breakdown[3]||0)}\n39.5% on 37,000.01 and above: ${fmt(breakdown[4]||0)}\n\n*Total PAYE: ${fmt(tax)}*\nNAPSA (5% capped): ${fmt(napsa)}\nNHIMA (1%): ${fmt(nhima)}\n----------------\n*NET PAY: ${fmt(net)}*\nEff Rate: ${eff}%`;
   }
   return `🤔 Didn't get that. Type *help*. Example: *paye 15000*`;
 }

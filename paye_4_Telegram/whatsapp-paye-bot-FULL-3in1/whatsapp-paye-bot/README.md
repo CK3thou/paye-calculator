@@ -4,7 +4,7 @@ By Chishimba Kabwe
 Full project to run your PAYE calculator from the HTML on WhatsApp.
 
 ## Features
-- 2026 ZRA PAYE bands: 0% up to 5100, 20% 5100-7100, 30% 7100-9200, 37% above
+- 2026 PAYE bands: 0% up to K5,100, 20% K5,100.01-K7,100, 30% K7,100.01-K9,200, 37% K9,200.01-K37,000, and 39.5% from K37,000.01
 - NAPSA 5% capped at K1,861.80
 - NHIMA 1%
 - Gratuity 25% of total basic earnings
