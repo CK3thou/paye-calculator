@@ -1,5 +1,5 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# Deploy the PAYE calculator to GitHub Pages
+name: Deploy PAYE calculator to Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -33,11 +33,14 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Prepare calculator site
+        run: |
+          mkdir -p _site
+          cp PAYE-CALCULATOR.html _site/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: _site
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
